@@ -21,9 +21,6 @@ import java.net.Socket;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
-
-import SendFile.Client;
-import SendFile.Server;
 import data.FileData;
 import tags.Decode;
 import tags.Encode;
@@ -37,7 +34,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.border.EmptyBorder;
 
 
-public class ChatGui {
+public class ChatGui extends ChatUI {
 
     private static String URL_DIR = System.getProperty("user.dir");
     private static String TEMP = "/temp/";
@@ -74,6 +71,22 @@ public class ChatGui {
             }
         });
     }
+    public ChatGui(String user, Socket socket, int port) {
+        nameUser = user;
+        socketChat = socket;
+        this.portServer = port;
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    ChatGui window = new ChatGui(nameUser, nameGuest, socketChat, portServer, 0);
+                    window.frameChatGui.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public ChatGui( Socket socket, int port) {
         socketChat = socket;
         this.portServer = port;
@@ -272,7 +285,6 @@ public class ChatGui {
                         //chat.sendMessage(Encode.sendFile(nameFile));
 
                         new Server(txtPath.getText());
-
                         System.out.println("sent file");
 
                     } catch (Exception e) {
@@ -749,7 +761,9 @@ public class ChatGui {
                 outputStream.flush();
                 System.out.println("Send file success...");
 
+                sendTxtMessage("NhanFileKhong","khuong");
                 fileInputStream.close();
+
                 bufferedInputStream.close();
                 outputStream.close();
                 socket.close();
@@ -761,7 +775,7 @@ public class ChatGui {
     }
 
 
-    public class Client {
+    public static class Client {
 
         private String serverName = "localhost";
         private int serverPort = 50000;

@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -25,6 +26,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,8 +34,8 @@ import java.util.logging.Logger;
 import Class.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.stage.*;
+import javafx.stage.Window;
 import tags.Decode;
 import tags.Tags;
 
@@ -266,10 +268,10 @@ public class ChatUI implements Initializable {
         System.out.println(host);
 
 
-        //ChatGui c = new ChatGui(new Socket(host,50000),50000);
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(new Stage());
-        System.out.println(selectedFile.getAbsolutePath());
+        ChatGui c = new ChatGui("khuong",new Socket(host,50000),50000);
+//        FileChooser fileChooser = new FileChooser();
+//        File selectedFile = fileChooser.showOpenDialog(new Stage());
+//        System.out.println(selectedFile.getAbsolutePath());
 
     }
 
@@ -311,6 +313,31 @@ public class ChatUI implements Initializable {
 
                         // Analyse message
                         String peerRequest = DetachTagsMsg.getTextMessage(clientRequest);
+                        if (peerRequest.matches( "NhanFileKhong")){
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle("Confirmation Dialog");
+                            alert.setHeaderText("Look, a Confirmation Dialog");
+                            alert.setContentText("Are you ok with this?");
+
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.get() == ButtonType.OK){
+                                DirectoryChooser dc = new DirectoryChooser();
+                                Stage window = new Stage();
+                                window.initModality(Modality.APPLICATION_MODAL);
+                                window.setTitle("A File was sent to you!");
+                                window.setWidth(300);
+                                window.setHeight(200);
+                                dc.showDialog(window);
+                                File f = dc.getInitialDirectory();
+                                String s = f.getAbsolutePath();
+                                new ChatGui.Client(s);
+                            } else {
+                                socket.close();
+                                // ... user chose CANCEL or closed the dialog
+
+                            }
+
+                        }
                         if (peerRequest != null) {
                             Platform.runLater(new Runnable() {
                                 @Override
