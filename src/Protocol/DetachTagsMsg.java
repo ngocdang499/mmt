@@ -86,23 +86,23 @@ public class DetachTagsMsg {
                 array = array.substring(1); // will give you just "computer"
                 l.add(array);
             }
-            for(String i : l) {
-                if (account.matcher(message).matches()) {
-                    Document doc = convertStringToXML(message);
-
-                    String name = doc.getElementsByTagName("USR_ID").item(0).getTextContent();
-
-                    String pwd = doc.getElementsByTagName("USR_PWD").item(0).getTextContent();
-
-                    String ip = doc.getElementsByTagName("USR_IP").item(0).getTextContent();
-
-                    Integer port = Integer.parseInt(doc.getElementsByTagName("USR_PORT").item(0).getTextContent());
-
-                    Integer status = Integer.parseInt(doc.getElementsByTagName("USR_STAT").item(0).getTextContent());;
-
-                    return new User(name,ip,pwd,port,status);
-                }
-            }
+//            for(String i : l) {
+//                if (account.matcher(message).matches()) {
+//                    Document doc = convertStringToXML(message);
+//
+//                    String name = doc.getElementsByTagName("USR_ID").item(0).getTextContent();
+//
+//                    String pwd = doc.getElementsByTagName("USR_PWD").item(0).getTextContent();
+//
+//                    String ip = doc.getElementsByTagName("USR_IP").item(0).getTextContent();
+//
+//                    Integer port = Integer.parseInt(doc.getElementsByTagName("USR_PORT").item(0).getTextContent());
+//
+//                    Integer status = Integer.parseInt(doc.getElementsByTagName("USR_STAT").item(0).getTextContent());;
+//
+//                    return new User(name,ip,pwd,port,status);
+//                }
+//            }
 
 //            for(int i = 0; i < node_list.getLength(); i = i + 1) {
 //
