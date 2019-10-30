@@ -5,7 +5,7 @@ import java.io.Serializable;
 import Protocol.Tags;
 
 @SuppressWarnings("serial")
-public class DataFile implements Serializable{
+public class FileData implements Serializable{
 
     @SuppressWarnings("unused")
     private String openTags = Tags.FILE_DATA_OPEN_TAG;
@@ -13,11 +13,11 @@ public class DataFile implements Serializable{
     private String closeTags = Tags.FILE_DATA_CLOSE_TAG;
     public byte[] data;
 
-    public DataFile() {
-        data = new byte[Tags.MAX_MSG_SIZE];
+    public FileData() {
+        data = new byte[1024];
     }
 
-    public DataFile(int size) {
+    public FileData(int size) {
         data = new byte[size];
     }
 }

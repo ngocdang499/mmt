@@ -2,6 +2,7 @@ package Protocol;
 
 import Class.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,49 +78,29 @@ public class DetachTagsMsg {
     public static ArrayList<User> getSendIP(String message) {
         if (send_IP.matcher(message).matches()) {
             ArrayList<User> account_list = new ArrayList<User>();
-            Document document = convertStringToXML(message);
-            String array = document.getElementsByTagName("CHAT_IP").item(0).getTextContent();
-            Matcher m = account.matcher(array);
-            List<String> l = new ArrayList<String>();
-            while(m.find()) {
-                //will give you "#computer"
-                array = array.substring(1); // will give you just "computer"
-                l.add(array);
+            message = message.replace(Tags.CHAT_IP_OPEN_TAG,"");
+            message = message.replace(Tags.CHAT_IP_CLOSE_TAG,"");
+
+            message = message.replace(Tags.USR_STAT_CLOSE_TAG,Tags.USR_STAT_CLOSE_TAG+Tags.ACC_REGIS_CLOSE_TAG+";");
+            message = message.replace(Tags.USR_ID_OPEN_TAG,Tags.ACC_REGIS_OPEN_TAG + Tags.USR_ID_OPEN_TAG);
+
+            List<String> str_lst = Arrays.asList(message.split("\\s*;\\s*"));
+            System.out.println(str_lst);
+            int i = 0;
+            for (i = 0; i < str_lst.size(); i++) {
+                System.out.println(str_lst.get(i));
+                if (account.matcher(str_lst.get(i)).matches()) {
+                    Document document = convertStringToXML(str_lst.get(i));
+                    String name = document.getElementsByTagName("USR_ID").item(0).getTextContent();
+                    String pwd = "";
+                    String ip = document.getElementsByTagName("USR_IP").item(0).getTextContent();
+                    Integer port = Integer.parseInt(document.getElementsByTagName("USR_PORT").item(0).getTextContent());
+                    Integer status = Integer.parseInt(document.getElementsByTagName("USR_STAT").item(0).getTextContent());;
+                    account_list.add(new User(name,ip,pwd,port,status));
+                    System.out.println( "hey" + name);
+                }
+
             }
-//            for(String i : l) {
-//                if (account.matcher(message).matches()) {
-//                    Document doc = convertStringToXML(message);
-//
-//                    String name = doc.getElementsByTagName("USR_ID").item(0).getTextContent();
-//
-//                    String pwd = doc.getElementsByTagName("USR_PWD").item(0).getTextContent();
-//
-//                    String ip = doc.getElementsByTagName("USR_IP").item(0).getTextContent();
-//
-//                    Integer port = Integer.parseInt(doc.getElementsByTagName("USR_PORT").item(0).getTextContent());
-//
-//                    Integer status = Integer.parseInt(doc.getElementsByTagName("USR_STAT").item(0).getTextContent());;
-//
-//                    return new User(name,ip,pwd,port,status);
-//                }
-//            }
-
-//            for(int i = 0; i < node_list.getLength(); i = i + 1) {
-//
-//                Node node = node_list.item(i);
-//                if(node.getNodeType() == Node.ELEMENT_NODE) {
-//                    Element element = (Element) node;
-//
-//                    String name = element.getElementsByTagName("USR_ID").item(0).getTextContent();
-//                    String host = element.getElementsByTagName("USR_IP").item(0).getTextContent();
-//                    Integer port = Integer.parseInt(element.getElementsByTagName("USR_PORT").item(0).getTextContent());
-//                    Integer stat = Integer.parseInt(element.getElementsByTagName("USR_STAT").item(0).getTextContent());
-//                    User usr = new User(name, host, "", port,stat);
-//
-//                    account_list.add(usr);
-//                }
-//            }
-
             return account_list;
         } else
             return null;
@@ -190,11 +171,11 @@ public class DetachTagsMsg {
     }
 
     private static Pattern account = Pattern.compile(
-            Tags.USR_ID_OPEN_TAG + ".*" + Tags.USR_ID_CLOSE_TAG
-                    + Tags.USR_PWD_OPEN_TAG + ".*" + Tags.USR_PWD_CLOSE_TAG
+            Tags.ACC_REGIS_OPEN_TAG + Tags.USR_ID_OPEN_TAG + ".*" + Tags.USR_ID_CLOSE_TAG
                     + Tags.USR_IP_OPEN_TAG + ".*" + Tags.USR_IP_CLOSE_TAG
                     + Tags.USR_PORT_OPEN_TAG + ".*" + Tags.USR_PORT_CLOSE_TAG
                     + Tags.USR_STAT_OPEN_TAG + ".*" + Tags.USR_STAT_CLOSE_TAG
+                    + Tags.ACC_REGIS_CLOSE_TAG
     );
 
     private static Pattern find_account = Pattern.compile(
