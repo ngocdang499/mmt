@@ -15,6 +15,8 @@ public class Tags {
     public static String ACC_REGIS_CLOSE_TAG = "</ACC_REGIS>";
     public  static String ACC_DENY_TAG = "<ACC_DENY>";
     public  static String REG_SUCCESS_TAG = "<REG_SUCCESS>";
+    public static String REG_FAIL_TAG = "<REG_FAIL>";
+    public static String UPDATE_PEER_LST_TAG = "<PEER_LST_UPDATE>";
 
     public static String USR_ID_OPEN_TAG = "<USR_ID>";
     public static String USR_ID_CLOSE_TAG = "</USR_ID>";

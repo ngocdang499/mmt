@@ -5,7 +5,8 @@ import javax.swing.JOptionPane;
 
 public class Tags {
 
-	public static int IN_VALID = -1;
+
+    public static int IN_VALID = -1;
 
 	public static int MAX_MSG_SIZE = 1024000; // ~1MB
 
