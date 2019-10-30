@@ -2,8 +2,11 @@ package GUI_Client;
 import Protocol.AttachTagsMsg;
 import Protocol.DetachTagsMsg;
 
+import Protocol.Tags;
 import data.FileData;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 import javafx.fxml.FXMLLoader;
@@ -11,6 +14,8 @@ import javafx.fxml.Initializable;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -37,9 +42,12 @@ import javafx.scene.shape.Circle;
 import javafx.stage.*;
 import javafx.stage.Window;
 import tags.Decode;
-import tags.Tags;
+
 
 public class ChatUI implements Initializable {
+
+    @FXML
+    Button btnLogout;
 
     @FXML
     VBox scrlChat;
@@ -61,6 +69,53 @@ public class ChatUI implements Initializable {
         //String msg = AttachTagsMsg.processRequestChatIP("khuong");
         // Send request ID verification to server
         String host = "";
+        // Send request ID verification to server
+        String message = "";
+        try
+        {
+            int recvport = 44000;
+            //InetAddress server_ip_addr = InetAddress.get;
+            socketClient = new Socket("192.168.137.1", recvport);
+            // Encode message (user-defined protocol)
+            message = Tags.UPDATE_PEER_LST_TAG;
+            // Send message to the server
+            ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
+            sender.writeObject(message); sender.flush();
+            // Get acknowledgment from the server
+            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
+            message = (String) listener.readObject();
+            System.out.println(message);
+            host = message;
+            // Close socket
+            socketClient.close();
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        finally
+        {
+            //Closing the socket
+            try
+            {
+                socketClient.close();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+
+        clearPeerTab();
+        peerLst = DetachTagsMsg.getSendIP(message);
+        System.out.println("List :" + peerLst.size());
+        int i;
+        for(i=0;i<peerLst.size();i++) {
+            createPeerTab(peerLst.get(i));
+        }
+
+        System.out.println(host);
+
 
         return host;
     }
@@ -94,7 +149,6 @@ public class ChatUI implements Initializable {
         mess.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/SendMesg.css").toExternalForm());
         scrlChat.getChildren().add(mess);
     }
-
 
     public void write(String s) {
         // Display received message
@@ -205,6 +259,12 @@ public class ChatUI implements Initializable {
     public void createPeerTab(User user){
         HBox tmp = new HBox();
         Button nameTag = new Button(user.getUsrID());
+        nameTag.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                lbChatID.setText(nameTag.getText());
+            }
+        });
+
         Circle c1 = new Circle(5);
         nameTag.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/NameTag.css").toExternalForm());
         tmp.getChildren().addAll(nameTag,c1);
@@ -215,12 +275,63 @@ public class ChatUI implements Initializable {
         }
         else {
             c1.setFill(Paint.valueOf("#bcbcbc"));
+            HBox.setMargin(c1,new Insets(25,25,20,20));
             vbFriend.getChildren().add( tmp);
         }
     }
 
     public void clearPeerTab(){
         vbFriend.getChildren().clear();
+    }
+
+    public void onbtnLogoutClicked(MouseEvent e) throws  Exception {
+        Button button = (Button) e.getSource();
+
+        String host = "";
+        // Send request ID verification to server
+        String message = "";
+        try
+        {
+            int recvport = 44000;
+            //InetAddress server_ip_addr = InetAddress.get;
+            socketClient = new Socket("192.168.137.1", recvport);
+            // Encode message (user-defined protocol)
+            message = AttachTagsMsg.processOfflineStatus(current.getUsrID());
+            // Send message to the server
+            ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
+            sender.writeObject(message); sender.flush();
+            // Get acknowledgment from the server
+            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
+            message = (String) listener.readObject();
+            System.out.println(message);
+            host = message;
+            // Close socket
+            socketClient.close();
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+        finally
+        {
+            //Closing the socket
+            try
+            {
+                socketClient.close();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+
+        Stage stage = (Stage) button.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginUI.fxml"));/* Exception */
+        Parent root = loader.load();
+        Scene scene = new Scene(root, 900, 600);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void onbtnSendFileclicked(MouseEvent e) throws Exception {
@@ -276,7 +387,7 @@ public class ChatUI implements Initializable {
     }
 
     /* When successfully logged in, start sending request to MainServer
-     * to retrieve user list and show that list in vbFriend.
+     * to retrieve user list and show that list in vbFriend.upd
      * Update the list and friend status every 1 minutes
      */
 
@@ -423,248 +534,7 @@ public class ChatUI implements Initializable {
 
     }
 
-    /*
-    private static String URL_DIR = System.getProperty("user.dir");
-    private static String TEMP = "/temp/";
-    public class ChatRoom extends Thread {
 
-
-        private Socket connect;
-        private ObjectOutputStream outPeer;
-        private ObjectInputStream inPeer;
-        private boolean continueSendFile = true, finishReceive = false;
-        private int sizeOfSend = 0, sizeOfData = 0, sizeFile = 0, sizeReceive = 0;
-        private String nameFileReceive = "";
-        private InputStream inFileSend;
-        private FileData dataFile;
-        private String username = "", guest_name = "", file_name = "";
-        public boolean isStop = false, isSendFile = false, isReceiveFile = false;
-
-        public ChatRoom(Socket connection, String name, String guest)
-                throws Exception {
-            connect = new Socket();
-            connect = connection;
-            guest_name = guest;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            OutputStream out = null;
-            while (!isStop) {
-                try {
-                    // Get data from another peer
-                    inPeer = new ObjectInputStream(connect.getInputStream());
-                    Object obj = inPeer.readObject();
-
-                    if (obj instanceof String) {
-                        String msgObj = obj.toString();
-
-                        if (msgObj.equals(Tags.CHAT_CLOSE_TAG)) {
-                            isStop = true;
-                            System.out.println("CLose Tag");
-
-                            connect.close();
-                            break;
-                        }
-
-                        if (Decode.checkFile(msgObj)) {
-                            isReceiveFile = true;
-                            nameFileReceive = msgObj.substring(10,
-                                    msgObj.length() - 11);
-
-                            System.out.println("checFile");
-
-                            if (result == 0) {
-                                File fileReceive = new File(URL_DIR + TEMP
-                                        + "/" + nameFileReceive);
-                                if (!fileReceive.exists()) {
-                                    fileReceive.createNewFile();
-                                }
-                                String msg = Tags.FILE_REQ_ACK_OPEN_TAG
-                                        + Integer.toBinaryString(portServer)
-                                        + Tags.FILE_REQ_ACK_CLOSE_TAG;
-                                sendMessage(msg);
-                            } else {
-                                sendMessage(Tags.FILE_REQ_NOACK_TAG);
-                            }
-                        }
-
-                        if (Decode.checkFeedBack(msgObj)) {
-                            new Thread(new Runnable() {
-                                public void run() {
-                                    try {
-                                        sendMessage(Tags.FILE_DATA_BEGIN_TAG);
-                                        updateChat("you are sending file:	" + file_name);
-                                        isSendFile = false;
-                                        sendFile(textPath.getText());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }).start();
-                        } else if (msgObj.equals(Tags.FILE_REQ_NOACK_TAG)) {
-                            JOptionPane.showMessageDialog(
-                                    fmChat, guest_name + " wantn't receive file");
-                        } else if (msgObj.equals(Tags.FILE_DATA_BEGIN_TAG)) {
-                            finishReceive = false;
-                            lbReceiving.setVisible(true);
-                            out = new FileOutputStream(URL_DIR + TEMP
-                                    + nameFileReceive);
-                        } else if (msgObj.equals(Tags.FILE_DATA_CLOSE_TAG)) {
-                            updateChat("You receive file:	" + nameFileReceive + " with size" + sizeReceive + " KB");
-                            sizeReceive = 0;
-                            out.flush();
-                            out.close();
-                            lbReceiving.setVisible(false);
-                            new Thread(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    showSaveFile();
-                                }
-                            }).start();
-                            finishReceive = true;
-                        } else {
-                            String message = Decode.getTextMessage(msgObj);
-                            updateChat("[" + guest_name + "] : " + message);
-                        }
-                    } else if (obj instanceof FileData) {
-                        FileData data = (FileData) obj;
-                        ++sizeReceive;
-                        out.write(data.data);
-                    }
-                } catch (Exception e) {
-                    File fileTemp = new File(URL_DIR + TEMP + nameFileReceive);
-                    if (fileTemp.exists() && !finishReceive) {
-                        fileTemp.delete();
-                    }
-                }
-            }
-        }
-
-        private void getData(String path) throws Exception {
-            File fileData = new File(path);
-            if (fileData.exists()) {
-                sizeOfSend = 0;
-                dataFile = new FileData();
-                sizeFile = (int) fileData.length();
-                sizeOfData = sizeFile % 1024 == 0 ? (int) (fileData.length() / 1024)
-                        : (int) (fileData.length() / 1024) + 1;
-                lbSending.setVisible(true);
-                progressSendFile.setVisible(true);
-                progressSendFile.setValue(0);
-                inFileSend = new FileInputStream(fileData);
-            }
-        }
-
-        public void sendFile(String path) throws Exception {
-            getData(path);
-            lbSending.setText("Sending ...");
-            do {
-                if (continueSendFile) {
-                    continueSendFile = false;
-                    new Thread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            try {
-                                inFileSend.read(dataFile.data);
-                                sendMessage(dataFile);
-                                sizeOfSend++;
-                                if (sizeOfSend == sizeOfData - 1) {
-                                    int size = sizeFile - sizeOfSend * 1024;
-                                    dataFile = new FileData(size);
-                                }
-                                progressSendFile
-                                        .setValue((int) (sizeOfSend * 100 / sizeOfData));
-                                if (sizeOfSend >= sizeOfData) {
-                                    inFileSend.close();
-                                    isSendFile = true;
-                                    sendMessage(Tags.FILE_DATA_CLOSE_TAG);
-                                    progressSendFile.setVisible(false);
-                                    lbSending.setVisible(false);
-                                    isSendFile = false;
-                                    textPath.setText("");
-                                    btnChoose.setEnabled(true);
-                                    btnUpload.setEnabled(true);
-                                    btnDelete.setEnabled(true);
-                                    updateChat("!!!YOU ARE SEND FILE COMPLETE!!!");
-                                    inFileSend.close();
-                                }
-                                continueSendFile = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-            } while (sizeOfSend < sizeOfData);
-        }
-*/
-    /*
-        private void showSaveFile() {
-            while (true) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(System
-                        .getProperty("user.home")));
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int result = fileChooser.showSaveDialog(fmChat);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File file = new File(fileChooser.getSelectedFile()
-                            .getAbsolutePath() + "/" + nameFileReceive );
-                    if (!file.exists()) {
-                        try {
-                            file.createNewFile();
-                            Thread.sleep(1000);
-                            InputStream input = new FileInputStream(URL_DIR
-                                    + TEMP + nameFileReceive);
-                            OutputStream output = new FileOutputStream(
-                                    file.getAbsolutePath());
-                            copyFileReceive(input, output, URL_DIR + TEMP
-                                    + nameFileReceive);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(fmChat, "Your file receive has error!!!");
-                        }
-                        break;
-                    } else {
-                        int resultContinue = JOptionPane.showConfirmDialog(
-                                fmChat, "File is exists. You want save file?", null,
-                                JOptionPane.YES_NO_OPTION
-                        );
-                        if (resultContinue == 0)
-                            continue;
-                        else
-                            break;
-                    }
-                }
-            }
-        }
-
-        public synchronized void sendMessage(Object obj) throws Exception {
-            outPeer = new ObjectOutputStream(connect.getOutputStream());
-            if (obj instanceof String) {
-                String message = obj.toString();
-                outPeer.writeObject(message);
-                outPeer.flush();
-                if (isReceiveFile)
-                    isReceiveFile = false;
-            } else if (obj instanceof FileData) {
-                outPeer.writeObject(obj);
-                outPeer.flush();
-            }
-        }
-
-        public void stopChat() {
-            try {
-                connect.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-}*/
 
 }
 
