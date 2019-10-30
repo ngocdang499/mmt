@@ -1,0 +1,23 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/App/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib" />
+      <root url="jar://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/jar_files/poi-ooxml-schemas-4.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/jar_files/poi-4.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/jar_files/xmlbeans-3.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/jar_files/poi-ooxml-4.1.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/commons-collections4-4.4.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/commons-compress-1.18.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/dom4j-1.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/App/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib" />
+    </NATIVE>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/App/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/App/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../5_Year2_Sem2+3/HK2_Year2/CNPM/App/openjfx-11.0.2_linux-x64_bin-sdk/javafx-sdk-11.0.2/lib" recursive="false" type="SOURCES" />
+  </library>
+</component>
