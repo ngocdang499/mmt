@@ -71,7 +71,7 @@ public class LoginUI {
                 //Get controller of scene2
                 ChatUI inputController = loader.getController();
                 //Pass whatever data you want. You can have multiple method calls here
-                inputController.transferClientData(current_User, message);
+                inputController.transferClientData(current_User, message,txtIP.getText());
 
                 Scene scene = new Scene(root, 900, 600);
                 stage.setScene(scene);

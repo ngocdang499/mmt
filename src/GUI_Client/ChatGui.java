@@ -5,7 +5,6 @@ import java.awt.EventQueue;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -29,7 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 
-import data.DataFile;
+import data.FileData;
 import tags.Decode;
 import tags.Encode;
 import tags.Tags;
@@ -374,7 +373,7 @@ public class ChatGui {
                 sizeReceive = 0;
         private String nameFileReceive = "";
         private InputStream inFileSend;
-        private DataFile dataFile;
+        private FileData dataFile;
 
         public ChatRoom(Socket connection, String name, String guest)
                 throws Exception {
@@ -475,8 +474,8 @@ public class ChatGui {
                             String message = Decode.getMessage(msgObj);
                             updateChat_receive(message);
                         }
-                    } else if (obj instanceof DataFile) {
-                        DataFile data = (DataFile) obj;
+                    } else if (obj instanceof FileData) {
+                        FileData data = (FileData) obj;
                         ++sizeReceive;
                         out.write(data.data);
                     }
@@ -494,7 +493,7 @@ public class ChatGui {
             File fileData = new File(path);
             if (fileData.exists()) {
                 sizeOfSend = 0;
-                dataFile = new DataFile();
+                dataFile = new FileData();
                 sizeFile = (int) fileData.length();
                 sizeOfData = sizeFile % 1024 == 0 ? (int) (fileData.length() / 1024)
                         : (int) (fileData.length() / 1024) + 1;
@@ -536,7 +535,7 @@ public class ChatGui {
                                 sizeOfSend++;
                                 if (sizeOfSend == sizeOfData - 1) {
                                     int size = sizeFile - sizeOfSend * 1024;
-                                    dataFile = new DataFile(size);
+                                    dataFile = new FileData(size);
                                 }
                                 progressSendFile
                                         .setValue((int) (sizeOfSend * 100 / sizeOfData));
@@ -612,7 +611,7 @@ public class ChatGui {
                     isReceiveFile = false;
             }
             // send attach file
-            else if (obj instanceof DataFile) {
+            else if (obj instanceof FileData) {
                 outPeer.writeObject(obj);
                 outPeer.flush();
             }
