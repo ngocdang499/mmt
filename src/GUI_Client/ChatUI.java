@@ -248,7 +248,7 @@ public class ChatUI implements Initializable {
 
         System.out.println(host);
 
-        ChatGui c = new ChatGui(new Socket(host,44002),44002);
+        ChatGui c = new ChatGui(new Socket(host,50000),44000);
 
 
         //        //Open windows for choosing file

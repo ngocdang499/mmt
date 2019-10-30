@@ -247,7 +247,7 @@ public class ChatGui {
                     try {
 
                         chat.sendMessage(Encode.sendFile(nameFile));
-                        System.out.println(isSendFile);
+                        System.out.println("isSendFile");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -411,6 +411,8 @@ public class ChatGui {
                         }
                         if (Decode.checkFile(msgObj)) {
                             isReceiveFile = true;
+                            System.out.println("isReceiveFile");
+
                             nameFileReceive = msgObj.substring(10,
                                     msgObj.length() - 11);
                             int result = Tags.show(frameChatGui, nameGuest
@@ -419,6 +421,8 @@ public class ChatGui {
                             if (result == 0) {
                                 File fileReceive = new File(URL_DIR + TEMP
                                         + "/" + nameFileReceive);
+                                System.out.println("create file");
+
                                 if (!fileReceive.exists()) {
                                     fileReceive.createNewFile();
                                 }
