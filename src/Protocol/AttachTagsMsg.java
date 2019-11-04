@@ -25,11 +25,9 @@ public class AttachTagsMsg {
                 + Tags.ACC_REGIS_CLOSE_TAG;
     }
 
-    public static String processOnlineStatus(String _ID, String _Passwd, String _IP, String _Port) {
+    public static String processOnlineStatus(String _ID, String _IP) {
         return Tags.SESSION_ON_OPEN_TAG + Tags.USR_ID_OPEN_TAG + _ID + Tags.USR_ID_CLOSE_TAG
-                                        + Tags.USR_PWD_OPEN_TAG + _Passwd + Tags.USR_PWD_CLOSE_TAG
                                         + Tags.USR_IP_OPEN_TAG + _IP + Tags.USR_IP_CLOSE_TAG
-                                        + Tags.USR_PORT_OPEN_TAG + _Port + Tags.USR_PORT_CLOSE_TAG
                                         + Tags.SESSION_ON_CLOSE_TAG;
     }
 
@@ -65,7 +63,7 @@ public class AttachTagsMsg {
     }
 
     public static String processFileMessage(String user, String fname) {
-        return Tags.CHAT_MSG_OPEN_TAG + Tags.USR_IP_OPEN_TAG + user + Tags.USR_IP_CLOSE_TAG
+        return Tags.CHAT_MSG_OPEN_TAG + Tags.USR_ID_OPEN_TAG + user + Tags.USR_ID_CLOSE_TAG
                                         + Tags.FILE_MSG_OPEN_TAG + fname + Tags.FILE_MSG_CLOSE_TAG
                                         + Tags. CHAT_MSG_CLOSE_TAG;
 

@@ -44,6 +44,8 @@ public class Tags {
     public static  String FILE_MSG_CLOSE_TAG = "</FILE_MSG>";
     public static String CHAT_ACCEPT_TAG = "<CHAT_ACPT>";
     public static String CHAT_DENY_TAG = "CHAT_DENY>";
+    public static String FILE_ACCEPT_TAG = "FILE_ACCEPT";
+    public static String FILE_REFUSE_TAG = "FILE_REFUSE";
 
 
 

@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Server/YNDIalog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_CSS/ChatArea.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_CSS/ChatArea.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$1.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$2.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$3.class" beforeDir="false" />
@@ -12,17 +13,88 @@
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$5.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$6.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$8.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$ChatRoom$1.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$ChatRoom$2.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$ChatRoom$3.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$ChatRoom.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$Client.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui$Server.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatGui.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$1$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/LoginUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI_Client/ChatGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI_Client/ChatGui.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI_Client/ChatUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI_Client/ChatUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/ChatUI.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/LoginUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/GUI_Client/LoginUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/AttachTagsMsg.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/AttachTagsMsg.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/DetachTagsMsg.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/DetachTagsMsg.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/Tags.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BTL_1_v1/Protocol/Tags.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Class/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Class/User_Database.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/Button.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/ChatArea.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/ChatLabel.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/NameTag.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/OnlineArea.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/Search.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/SendMesg.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/TextArea.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_CSS/VBox.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/ChatGui.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/ChatUI.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/ChatUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/Client.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/FileChooserSample.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/IncomeMesg.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/LoginUI.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/LoginUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/Usr.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI_Client/user1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Group.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Logout.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Mess.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Passwd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Search.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Send.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/Upload.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Icon/User.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/AttachTagsMsg.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/DetachTagsMsg.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/Message.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/MessageListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/Status.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/Tags.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Protocol/WritableGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Server/AlertBox.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Server/YNDIalog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/FileData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/Peer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/Slightly_Smiling_Face_Emoji.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/attachment.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/chat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/connect.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/crying.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/heart_eye.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/like.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/login.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/sad.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/scared.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/send.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/serverManager.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/servermanager64x64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/smile.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/smile_big.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/smile_cry.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/start.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/stop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/user.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image/user_chat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tags/Decode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tags/Encode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tags/Tags.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -125,13 +197,14 @@
     <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/GUI_Client" />
+      <recent name="$PROJECT_DIR$/src/GUI_CSS" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/GUI_CSS" />
       <recent name="$PROJECT_DIR$/src/GUI_Client" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/GUI_Client" />
-      <recent name="$PROJECT_DIR$/src/GUI_CSS" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -289,5 +362,24 @@
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/GUI_Client/ChatGui.java</url>
+          <line>405</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/GUI_Client/ChatGui.java</url>
+          <line>578</line>
+          <properties class="GUI_Client.ChatGui.ChatRoom" method="sendFile">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

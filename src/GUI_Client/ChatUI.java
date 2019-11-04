@@ -1,10 +1,15 @@
 package GUI_Client;
+import Communicate.FileClient;
+import Communicate.*;
 import Protocol.AttachTagsMsg;
 import Protocol.DetachTagsMsg;
 
 import Protocol.Tags;
+import Server.AcceptFileBox;
+import Server.AlertBox;
 import data.FileData;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,38 +18,43 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.awt.*;
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import Class.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.*;
-import javafx.stage.Window;
-import tags.Decode;
+
 
 
 public class ChatUI implements Initializable {
+
+    private static Integer TXTPORT = 50000;
+    private static Integer SVRPORT = 44000;
+    private static Integer FILEPORT = 60000;
+    private static String current_peer = "";
+    public static String SERVER = "";
+    private static Socket socket;
+
 
     @FXML
     Button btnLogout;
@@ -57,17 +67,41 @@ public class ChatUI implements Initializable {
 
     @FXML
     TextArea txtArea;
+
     @FXML
-    Label lbChatID;
+    Button btnSearch;
 
-    User current;
-    ArrayList<User> peerLst = new ArrayList<User>();
+    @FXML
+    TextField txtSearch;
+
+    @FXML
+    Button btnMessage;
+
+
+    private User current;
+    private ArrayList<User> peerLst = new ArrayList<User>();
+
+    public void transferUserData(User user, String List, String server){
+
+        SERVER = server;
+        //Display the message
+        current = new User(user.getUsrID(),user.getUsrIP(),user.getUsrPasswd(),user.getUsrPort(),user.getUsrStatus());
+        peerLst = DetachTagsMsg.getSendIP(List);
+
+        System.out.println("List :" + peerLst.size());
+        int i;
+        for(i=0;i<peerLst.size();i++) {
+            System.out.println(peerLst.get(i).getUsrIP());
+            if (peerLst.get(i).getUsrID().matches(current.getUsrID()))
+                continue;
+            createPeerTab(peerLst.get(i));
+        }
+        SendMsg.broadcastStatus(current,peerLst,1);
+    }
+
     private static Socket socketClient;
-    public String updatePeer(MouseEvent e) throws Exception {
-
+    public String updatePeerTab(MouseEvent e) throws Exception {
         Button button = (Button) e.getSource();
-        //String msg = AttachTagsMsg.processRequestChatIP("khuong");
-        // Send request ID verification to server
         String host = "";
         // Send request ID verification to server
         String message = "";
@@ -105,7 +139,6 @@ public class ChatUI implements Initializable {
                 ex.printStackTrace();
             }
         }
-
         clearPeerTab();
         peerLst = DetachTagsMsg.getSendIP(message);
         System.out.println("List :" + peerLst.size());
@@ -115,153 +148,118 @@ public class ChatUI implements Initializable {
         }
 
         System.out.println(host);
-
-
         return host;
     }
 
-    public static String SERVER = "";
-
-    public void transferClientData(User user, String List, String server){
-        SERVER = server;
-        //Display the message
-        current = new User(user.getUsrID(),user.getUsrIP(),user.getUsrPasswd(),user.getUsrPort(),user.getUsrStatus());
-        peerLst = DetachTagsMsg.getSendIP(List);
-        System.out.println("List :" + peerLst.size());
-        int i;
-        for(i=0;i<peerLst.size();i++) {
-            createPeerTab(peerLst.get(i));
-        }
-    }
+    @FXML
+    TabPane tabPane;
 
     private void genCommingMess(String u, String s) {
+
+        for(Tab t : tabPane.getTabs()) {
+            if(t.getText().matches(u)) {
+                AnchorPane pane = (AnchorPane)t.getContent();
+                ScrollPane scrollChat= (ScrollPane) pane.getChildren().get(0);
+                scrollChat.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+                VBox vb = (VBox)scrollChat.getContent();
+
+
+                VBox tmpB = new VBox();
+                Label usr = new Label(u);
+                Label mess = new Label(s);
+                mess.setWrapText(true);
+                mess.setMinWidth(400);
+                usr.getStylesheets().add(ChatUI.class.getResource("Usr.css").toExternalForm());
+                mess.getStylesheets().add(ChatUI.class.getResource("IncomeMesg.css").toExternalForm());
+                tmpB.getChildren().addAll(usr, mess);
+
+                vb.getChildren().add(tmpB);
+                scrollChat.setContent(vb);
+                scrollChat.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
+                return;
+            }
+        }
+
+        VBox vb = new VBox();
+        vb.setStyle("-fx-max-width: 520px");
+        vb.setStyle("-fx-spacing: 20px");
+        ScrollPane scrollChat = new ScrollPane(vb);
+        scrollChat.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollChat.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/ChatArea.css").toExternalForm());
+        AnchorPane pane = new AnchorPane(scrollChat);
+        pane.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/AnchorPane.css").toExternalForm());
+        Tab tab = new Tab(u,pane);
+        tabPane.getTabs().add(tab);
+
         VBox tmpB = new VBox();
         Label usr = new Label(u);
         Label mess = new Label(s);
+        mess.setMinWidth(400);
+        mess.setWrapText(true);
         usr.getStylesheets().add(ChatUI.class.getResource("Usr.css").toExternalForm());
         mess.getStylesheets().add(ChatUI.class.getResource("IncomeMesg.css").toExternalForm());
         tmpB.getChildren().addAll(usr, mess);
-        scrlChat.getChildren().add(tmpB);
+
+        vb.getChildren().add(tmpB);
+        scrollChat.setContent(vb);
+        scrollChat.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollChat.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
     }
 
     private void genSendingMess(String s) {
+        AnchorPane pane = (AnchorPane)tabPane.getSelectionModel().getSelectedItem().getContent();
+        ScrollPane scrollChat= (ScrollPane) pane.getChildren().get(0);
+        scrollChat.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        VBox vb = (VBox)scrollChat.getContent();
+
         Label mess = new Label(s);
+        mess.setMinWidth(400);
+        mess.setWrapText(true);
         mess.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/SendMesg.css").toExternalForm());
-        scrlChat.getChildren().add(mess);
-    }
-
-    public void write(String s) {
-        // Display received message
-        String[] id_mess = s.split(":", 2);
-        genCommingMess(id_mess[0], id_mess[1]);
-    }
-
-
-    public void sendTxtMessage(String msg1, String PeerName) {
-        String host = "";
-        // Send request ID verification to server
-        try
-        {
-            int recvport = 44000;
-            //InetAddress server_ip_addr = InetAddress.get;
-            socketClient = new Socket("192.168.137.1", recvport);
-            // Encode message (user-defined protocol)
-            String message = AttachTagsMsg.processRequestChatIP(PeerName);
-            // Send message to the server
-            ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
-            sender.writeObject(message); sender.flush();
-            // Get acknowledgment from the server
-            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
-            message = (String) listener.readObject();
-            System.out.println(message);
-            host = message;
-            // Close socket
-            socketClient.close();
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-        finally
-        {
-            //Closing the socket
-            try
-            {
-                socketClient.close();
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-
-
-        System.out.println(host);
-        {
-            // Display message
-            String msg = msg1;
-            genSendingMess(msg);
-            // Send mess to Other peer
-            //========================================================================================
-            try
-            {
-                int recvport = 50000;
-
-                socket = new Socket(host,recvport);
-
-                String tmp = msg1;
-                if(tmp.contains("\n")) {
-                    tmp = tmp.replaceAll("\n","(\\ n)");
-                }
-
-                String sendTxt = AttachTagsMsg.processTextMessage(lbChatID.getText(),tmp);
-                //Send the message to the server
-                //PrintStream o_stream = new PrintStream(socket.getOutputStream());
-                ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
-                sender.writeObject(sendTxt);
-                sender.flush();
-                sender.close();
-            }
-            catch (Exception exception)
-            {
-                exception.printStackTrace();
-            }
-            finally
-            {
-                //Closing the socket
-                try
-                {
-                    socket.close();
-                }
-                catch(Exception ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-        }
+        vb.getChildren().add(mess);
+        scrollChat.setContent(vb);
+        scrollChat.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
     }
 
 
     public void onbtnSendClick(MouseEvent e) throws Exception {
         Button button = (Button) e.getSource();
-        //String msg = AttachTagsMsg.processRequestChatIP("khuong");
-        //System.out.println(msg);
-        if(!(txtArea.getText().isBlank() || lbChatID.getText().isBlank())) {
-            sendTxtMessage(txtArea.getText(), lbChatID.getText());
+        String host = SendMsg.getIP(tabPane.getSelectionModel().getSelectedItem().getText(),peerLst);
+        System.out.println("Host" + host);
+        if(!(txtArea.getText().isBlank() || host==null)) {
+            SendMsg.sendMessage(current,txtArea.getText(),host,TXTPORT);
         }
-
+        genSendingMess(txtArea.getText());
 
         // clear the text area
         txtArea.setText("");
-
     }
+
 
     public void createPeerTab(User user){
         HBox tmp = new HBox();
         Button nameTag = new Button(user.getUsrID());
         nameTag.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                lbChatID.setText(nameTag.getText());
+                for(Tab t : tabPane.getTabs()){
+                    if(t.getText().matches(user.getUsrID())){
+                        tabPane.getSelectionModel().select(t);
+                        return;
+                    }
+                }
+                VBox vb = new VBox();
+                vb.setStyle("-fx-max-width: 520px");
+                vb.setStyle("-fx-spacing: 20px");
+                ScrollPane scrollChat = new ScrollPane(vb);
+                scrollChat.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
+                scrollChat.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+                scrollChat.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/ChatArea.css").toExternalForm());
+                AnchorPane pane = new AnchorPane(scrollChat);
+                pane.getStylesheets().add(ChatUI.class.getResource("../GUI_CSS/AnchorPane.css").toExternalForm());
+                Tab tab = new Tab(user.getUsrID(),pane);
+                tabPane.getTabs().add(tab);
+                tabPane.getSelectionModel().select(tab);
+
             }
         });
 
@@ -287,26 +285,18 @@ public class ChatUI implements Initializable {
     public void onbtnLogoutClicked(MouseEvent e) throws  Exception {
         Button button = (Button) e.getSource();
 
-        String host = "";
-        // Send request ID verification to server
+        // Send notice to server
         String message = "";
         try
         {
             int recvport = 44000;
             //InetAddress server_ip_addr = InetAddress.get;
-            socketClient = new Socket("192.168.137.1", recvport);
+            socketClient = new Socket(SERVER, recvport);
             // Encode message (user-defined protocol)
             message = AttachTagsMsg.processOfflineStatus(current.getUsrID());
             // Send message to the server
             ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
             sender.writeObject(message); sender.flush();
-            // Get acknowledgment from the server
-            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
-            message = (String) listener.readObject();
-            System.out.println(message);
-            host = message;
-            // Close socket
-            socketClient.close();
         }
         catch (Exception exception)
         {
@@ -325,8 +315,20 @@ public class ChatUI implements Initializable {
             }
         }
 
-        Stage stage = (Stage) button.getScene().getWindow();
+        ///Broadcast status update to other peer and server
+        SendMsg.broadcastStatus(current,peerLst,0);
 
+        try
+        {
+            socket.close();
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
+        Stage stage = (Stage) button.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginUI.fxml"));/* Exception */
         Parent root = loader.load();
         Scene scene = new Scene(root, 900, 600);
@@ -334,29 +336,45 @@ public class ChatUI implements Initializable {
         stage.show();
     }
 
+
+    private static Socket Fsocket;
     public void onbtnSendFileclicked(MouseEvent e) throws Exception {
         Button button = (Button) e.getSource();
-        //String msg = AttachTagsMsg.processRequestChatIP("khuong");
-        //System.out.println(msg);
-        String host = "";
-        // Send request ID verification to server
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(new Stage());
+        String path = selectedFile.getAbsolutePath();
+        System.out.println(path);
+        File myFile = new File(path);
+//        byte[] myByteArray = new byte[(int) myFile.length()];
+
         try
         {
-            int recvport = 44000;
-            //InetAddress server_ip_addr = InetAddress.get;
-            socketClient = new Socket("192.168.137.1", recvport);
+            String host = SendMsg.getIP(tabPane.getSelectionModel().getSelectedItem().getText(),peerLst);
+            //String host = "192.168.43.200";
+            Fsocket = new Socket(host,TXTPORT);
             // Encode message (user-defined protocol)
-            String message = AttachTagsMsg.processRequestChatIP("khuong");
+            String message = AttachTagsMsg.processFileMessage(tabPane.getSelectionModel().getSelectedItem().getText(),
+                                                                path.substring(path.lastIndexOf("/") + 1));
             // Send message to the server
-            ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
+            ObjectOutputStream sender = new ObjectOutputStream(Fsocket.getOutputStream());
             sender.writeObject(message); sender.flush();
+            System.out.println("314: " + message);
             // Get acknowledgment from the server
-            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
+            ObjectInputStream listener = new ObjectInputStream(Fsocket.getInputStream());
             message = (String) listener.readObject();
-            System.out.println(message);
-            host = message;
+            System.out.println("Accept or not?" + message);
             // Close socket
-            socketClient.close();
+            Fsocket.close();
+
+            if (message.matches(Tags.FILE_ACCEPT_TAG)) {
+                SendMsg.sendMessage(current,myFile,host,FILEPORT);
+
+            }
+            else {
+                AlertBox alertbox = new AlertBox();
+                alertbox.display("Failed", tabPane.getSelectionModel().getSelectedItem().getText() + " doesn't accept your file.");
+            }
+
         }
         catch (Exception exception)
         {
@@ -367,23 +385,13 @@ public class ChatUI implements Initializable {
             //Closing the socket
             try
             {
-                socketClient.close();
+                Fsocket.close();
             }
             catch(Exception ex)
             {
                 ex.printStackTrace();
             }
         }
-
-
-        System.out.println(host);
-
-
-        ChatGui c = new ChatGui("khuong",new Socket(host,50000),50000);
-//        FileChooser fileChooser = new FileChooser();
-//        File selectedFile = fileChooser.showOpenDialog(new Stage());
-//        System.out.println(selectedFile.getAbsolutePath());
-
     }
 
     /* When successfully logged in, start sending request to MainServer
@@ -392,26 +400,28 @@ public class ChatUI implements Initializable {
      */
 
 
-    private static Socket socket;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+
+        /*
         try {
             int i;
             for(i = 0; i < peerLst.size(); i++) {
+                System.out.println(peerLst.get(i).getUsrID());
                 createPeerTab(peerLst.get(i));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-        }
-//===================================================Start Listening for Chat Request====================================================
-
+        }*/
+//================================================Start Listening for Chat Request===================================
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    int port = 50000;
+                    int port = TXTPORT;
                     ServerSocket serverSocket = new ServerSocket(port);
                     System.out.println("Server Started and listening to the port " + port);
 
@@ -421,34 +431,12 @@ public class ChatUI implements Initializable {
                         socket = serverSocket.accept();
                         ObjectInputStream receiver = new ObjectInputStream(socket.getInputStream());
                         String clientRequest = (String) receiver.readObject();
+                        System.out.println(clientRequest);
 
                         // Analyse message
-                        String peerRequest = DetachTagsMsg.getTextMessage(clientRequest);
-                        if (peerRequest.matches( "NhanFileKhong")){
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                            alert.setTitle("Confirmation Dialog");
-                            alert.setHeaderText("Look, a Confirmation Dialog");
-                            alert.setContentText("Are you ok with this?");
-
-                            Optional<ButtonType> result = alert.showAndWait();
-                            if (result.get() == ButtonType.OK){
-                                DirectoryChooser dc = new DirectoryChooser();
-                                Stage window = new Stage();
-                                window.initModality(Modality.APPLICATION_MODAL);
-                                window.setTitle("A File was sent to you!");
-                                window.setWidth(300);
-                                window.setHeight(200);
-                                dc.showDialog(window);
-                                File f = dc.getInitialDirectory();
-                                String s = f.getAbsolutePath();
-                                new ChatGui.Client(s);
-                            } else {
-                                socket.close();
-                                // ... user chose CANCEL or closed the dialog
-
-                            }
-
-                        }
+                        // Case 1: Text Message sent from peer
+                        final String peerRequest = DetachTagsMsg.getTextMessage(clientRequest);
+                        //System.out.println(peerRequest);
                         if (peerRequest != null) {
                             Platform.runLater(new Runnable() {
                                 @Override
@@ -461,35 +449,76 @@ public class ChatUI implements Initializable {
                             });
                         }
 
+                        // Case 2: Request sending file from peer
+                        final String fileRequest = DetachTagsMsg.checkFile(clientRequest);
+                        System.out.println(fileRequest);
+                        if (fileRequest != null) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    System.out.println("Inside case 2");
+                                    //update application thread
+                                    String tmp = fileRequest.replaceAll("\\ n", "\n");
+                                    String[] id_fname = tmp.split("::", 2);
+                                    AcceptFileBox afbox = new AcceptFileBox();
+                                    afbox.display("Accept File", id_fname,socket,current,peerLst);
+     ////////////////////////////////////////////////Hien cua so thong bao///////////////////////////////////////////////
+                                }
+                            });
+                        }
+
+                        // Case 3: Status update
                         String offID = DetachTagsMsg.getDiedAccount(clientRequest);
                         // Search for ID in peerlist
+
                         if(offID != null) {
                             for (User u : peerLst) {
-                                if (u.getUsrID().matches(offID))
+                                if (u.getUsrID().matches(offID)) {
                                     u.setUsrStatus(0);
+                                    u.setUsrIP("");
+                                    break;
+                                }
                             }
-                            clearPeerTab();
-                            for (User u : peerLst) {
-                                createPeerTab(u);
-                            }
+                            Platform.runLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    clearPeerTab();
+                                    for (User u : peerLst) {
+                                        if(!u.getUsrID().matches(current.getUsrID()))
+                                            createPeerTab(u);
+                                    }
+                                }
+                            });
                         }
 
                         User onID = DetachTagsMsg.getOnlAccount(clientRequest);
                         // Search for ID in peerlist
-                        if(offID != null) {
-                            for (User u : peerLst) {
-                                if (u.getUsrID().matches(onID.getUsrID()))
-                                    u.setUsrStatus(1);
+                        if(onID != null) {
+                            System.out.println("onID: " + onID.getUsrIP());
+                            int i;
+                            for (i = 0; i<peerLst.size(); i++) {
+                                if (peerLst.get(i).getUsrID().matches(onID.getUsrID())) {
+                                    peerLst.get(i).setUsrStatus(1);
+                                    peerLst.get(i).setUsrIP(onID.getUsrIP());
+                                    System.out.println("Listen to status update => update peerlst ?!");
+                                    break;
+                                }
                                 else
                                     peerLst.add(onID);
                             }
-                            clearPeerTab();
-                            for (User u : peerLst) {
-                                createPeerTab(u);
-                            }
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    clearPeerTab();
+                                    for (User u : peerLst) {
+                                        if(!u.getUsrID().matches(current.getUsrID()))
+                                            createPeerTab(u);
+                                    }
+                                }
+                            });
                         }
-
-
 
                     }
                 }
@@ -510,34 +539,8 @@ public class ChatUI implements Initializable {
                 }
             }
         }).start();
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    public void copyFileReceive(
-            InputStream inputStr,
-            OutputStream outputStr,
-            String path)
-            throws IOException {
-
-        byte[] buffer = new byte[1024];
-        int lenght;
-        while ((lenght = inputStr.read(buffer)) > 0)
-            outputStr.write(buffer, 0, lenght);
-
-        inputStr.close();
-        outputStr.close();
-        File fileTemp = new File(path);
-        if (fileTemp.exists()) fileTemp.delete();
-
-    }
-
-
-
 }
-
 
 
 

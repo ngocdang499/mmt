@@ -3,6 +3,7 @@ package GUI_Client;
 import Protocol.AttachTagsMsg;
 import Protocol.Tags;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +18,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import Server.*;
+import javafx.stage.WindowEvent;
 
 
 public class LoginUI {
@@ -45,18 +47,17 @@ public class LoginUI {
          // Send request ID verification to server
         try
         {
-            int recvport = 44000;
-            //InetAddress server_ip_addr = InetAddress.get;
             socketClient = new Socket(txtIP.getText(), Integer.parseInt(txtPort.getText()));
             // Encode message (user-defined protocol)
             String message = AttachTagsMsg.processAccVerification(txtID.getText(),txtPwd.getText(), txtIP.getText(), txtPort.getText());
             // Send message to the server
+            System.out.println(message);
             ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
             sender.writeObject(message); sender.flush();
             // Get acknowledgment from the server
             ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
             message = (String) listener.readObject();
-            System.out.println(message);
+            System.out.println("Listener: " +  message);
             // Close socket
             socketClient.close();
 
@@ -71,11 +72,53 @@ public class LoginUI {
                 //Get controller of scene2
                 ChatUI inputController = loader.getController();
                 //Pass whatever data you want. You can have multiple method calls here
-                inputController.transferClientData(current_User, message,txtIP.getText());
+
+                inputController.transferUserData(current_User, message,txtIP.getText());
 
                 Scene scene = new Scene(root, 900, 600);
                 stage.setScene(scene);
                 stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    public void handle(WindowEvent we) {
+                        String host = "";
+                        String message = "";
+                        try
+                        {
+                            int recvport = 44000;
+                            //InetAddress server_ip_addr = InetAddress.get;
+                            socketClient = new Socket(txtIP.getText(), recvport);
+                            // Encode message (user-defined protocol)
+                            message = AttachTagsMsg.processOfflineStatus(current_User.getUsrID());
+                            // Send message to the server
+                            ObjectOutputStream sender = new ObjectOutputStream(socketClient.getOutputStream());
+                            sender.writeObject(message); sender.flush();
+                            // Get acknowledgment from the server
+                            ObjectInputStream listener = new ObjectInputStream(socketClient.getInputStream());
+                            message = (String) listener.readObject();
+                            System.out.println(message);
+                            host = message;
+                            // Close socket
+                            socketClient.close();
+                        }
+                        catch (Exception exception)
+                        {
+                            exception.printStackTrace();
+                        }
+                        finally
+                        {
+                            //Closing the socket
+                            try
+                            {
+                                socketClient.close();
+                            }
+                            catch(Exception ex)
+                            {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                    }
+                });
             }
             else {
                 AlertBox alertbox = new AlertBox();
@@ -104,9 +147,6 @@ public class LoginUI {
                 ex.printStackTrace();
             }
         }
-
-
-
     }
 
     public void onbtnSignUpClick(MouseEvent e) throws Exception {

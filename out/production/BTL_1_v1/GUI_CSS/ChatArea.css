@@ -16,11 +16,20 @@
 
 
 .scroll-pane > .viewport {
-   -fx-background-color: transparent;
+   -fx-background-color: #ffffff;
+   -fx-min-width: 560px;
+   -fx-min-height: 420px;
+   -fx-max-width: 560px;
+   -fx-max-height: 420px;
 }
 
 .scroll-pane {
-   -fx-background-color: transparent;
+   -fx-background-color: #ffffff;
+   -fx-min-width: 560px;
+   -fx-min-height: 420px;
+   -fx-max-width: 560px;
+   -fx-max-height: 420px;
+   -fx-padding: 10 20 10 20;
 }
 
 

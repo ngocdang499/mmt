@@ -62,15 +62,9 @@ public class DetachTagsMsg {
 
             String name = document.getElementsByTagName("USR_ID").item(0).getTextContent();
 
-            String pwd = document.getElementsByTagName("USR_PWD").item(0).getTextContent();
-
             String ip = document.getElementsByTagName("USR_IP").item(0).getTextContent();
 
-            Integer port = Integer.parseInt(document.getElementsByTagName("USR_PORT").item(0).getTextContent());
-
-            Integer status = 1;
-
-            return new User(name,ip,pwd,port,status);
+            return new User(name,ip,"",0,1);
         }
         return null;
     }
@@ -125,11 +119,15 @@ public class DetachTagsMsg {
             return null;
     }
 
-    public static boolean checkFile(String name) {
-        if (check_file.matcher(name).matches())
-            return true;
+    public static String checkFile(String msg) {
+        if (check_file.matcher(msg).matches()) {
+            Document document = convertStringToXML(msg);
+            String usr_fname = document.getElementsByTagName("USR_ID").item(0).getTextContent();
+            usr_fname += "::" + document.getElementsByTagName("FILE_MSG").item(0).getTextContent();
+            return usr_fname;
+        }
         else
-            return false;
+            return null;
     }
 
     public static boolean checkFeedBack(String message) {
@@ -195,7 +193,9 @@ public class DetachTagsMsg {
     );
 
     private static Pattern find_message = Pattern.compile(
-            Tags.CHAT_MSG_OPEN_TAG+ ".*" + Tags.CHAT_MSG_CLOSE_TAG
+            Tags.CHAT_MSG_OPEN_TAG + Tags.USR_ID_OPEN_TAG + ".*" + Tags.USR_ID_CLOSE_TAG
+                                    + Tags.TEXT_MSG_OPEN_TAG + ".*" + Tags.TEXT_MSG_CLOSE_TAG
+                                    + Tags.CHAT_MSG_CLOSE_TAG
     );
 
     private static Pattern check_request = Pattern.compile(
@@ -207,7 +207,7 @@ public class DetachTagsMsg {
     );
 
     private static Pattern check_file = Pattern.compile(
-            Tags.CHAT_MSG_OPEN_TAG + Tags.USR_IP_OPEN_TAG + ".*" + Tags.USR_IP_CLOSE_TAG
+            Tags.CHAT_MSG_OPEN_TAG + Tags.USR_ID_OPEN_TAG + ".*" + Tags.USR_ID_CLOSE_TAG
                                     + Tags.FILE_MSG_OPEN_TAG + ".*" + Tags.FILE_MSG_CLOSE_TAG
                                     + Tags. CHAT_MSG_CLOSE_TAG
     );
@@ -219,7 +219,8 @@ public class DetachTagsMsg {
 
     private static Pattern status_onl = Pattern.compile(
             Tags.SESSION_ON_OPEN_TAG + Tags.USR_ID_OPEN_TAG + ".*" + Tags.USR_ID_CLOSE_TAG
-                    + Tags.SESSION_ON_CLOSE_TAG
+                                    + Tags.USR_IP_OPEN_TAG + ".*" + Tags.USR_IP_CLOSE_TAG
+                                    + Tags.SESSION_ON_CLOSE_TAG
     );
 
 }
